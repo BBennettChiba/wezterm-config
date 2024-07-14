@@ -2,6 +2,8 @@ local wezterm = require("wezterm")
 local features = require("features")
 local config = wezterm.config_builder()
 local G = features.getLuaFromJSON()
+local ram = require("ram")
+local cpu = require("cpu")
 
 local scheme = wezterm.color.get_builtin_schemes()[G.colorscheme]
 
@@ -112,6 +114,9 @@ wezterm.on("update-right-status", function(window, pane)
 	-- Each element holds the text for a cell in a "powerline" style << fade
 	local cells = {}
 
+	table.insert(cells, "ram: " .. ram.get_ram_usage())
+	table.insert(cells, "cpu: " .. cpu.get_cpu_usage())
+
 	-- Figure out the cwd and host of the current pane.
 	-- This will pick up the hostname for the remote host if your
 	-- shell is using OSC 7 on the remote host.
@@ -167,6 +172,7 @@ wezterm.on("update-right-status", function(window, pane)
 
 	-- Color palette for the backgrounds of each cell
 	local colors = {
+		"#113415",
 		"#3c1361",
 		"#52307c",
 		"#663a82",

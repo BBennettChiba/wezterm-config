@@ -134,3 +134,4 @@ return M
 --if leader key is touched change something somewhere
 --update tab name when switching pane
 --add cpu and ram usage to status bar
+--fix resizing in nvim
