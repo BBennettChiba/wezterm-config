@@ -16,7 +16,7 @@ M.get_cpu_usage = function()
 
 	local cpu_usage = tonumber(cpu)
 	if cpu_usage then
-		return string.format("%.2f%", cpu_usage)
+		return string.format("%.2f", cpu_usage) .. "%"
 	else
 		print("Error parsing CPU usage: " .. cpu)
 		return "Error"
