@@ -18,6 +18,16 @@ local direction_keys = {
 	l = "Right",
 }
 
+local choices = {}
+local workspaces = wezterm.mux.get_workspace_names()
+for i, workspace in ipairs(workspaces) do
+	print(workspace)
+	table.insert(choices, #choices + 1, {
+		label = workspace,
+		id = tostring(i),
+	})
+end
+
 local smart_split = wezterm.action_callback(function(window, pane)
 	local dim = pane:get_dimensions()
 	if dim.pixel_height > dim.pixel_width then
@@ -103,9 +113,6 @@ local keys = {
 				action = act.PromptInputLine({
 					description = "Enter new name for tab",
 					action = wezterm.action_callback(function(window, pane, line)
-						-- line will be `nil` if they hit escape without entering anything
-						-- An empty string if they just hit enter
-						-- Or the actual line of text they wrote
 						if line then
 							window:active_tab():set_title(line)
 						end
@@ -153,9 +160,20 @@ local keys = {
 			{
 				key = "W",
 				mods = "LEADER|SHIFT",
-				action = wezterm.action_callback(function(win, _)
-					print(wezterm.mux.get_workspace_names())
-				end),
+				action = act.InputSelector({
+					title = "Workspace selector",
+					action = wezterm.action_callback(function(_, _, _, label)
+						-- If the project workspace already exists, don't create it again. Just switch
+						for _, ws in pairs(workspaces) do
+							if ws == label then
+								wezterm.mux.set_active_workspace(label)
+								return
+							end
+						end
+						print("something went wrong")
+					end),
+					choices = choices,
+				}),
 			},
 		}
 
