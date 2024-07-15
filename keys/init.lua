@@ -1,6 +1,7 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 local features = require("features")
+local projects = require("projects")
 
 -- if you are *NOT* lazy-loading smart-splits.nvim (recommended)
 local function is_vim(pane)
@@ -55,11 +56,8 @@ local keys = {
 			{ mods = mod, key = "Enter", action = smart_split },
 			{ mods = "LEADER|SHIFT", key = "%", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 			{ mods = "LEADER|SHIFT", key = '"', action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
-
 			{ key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
-
 			{ key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
-
 			{ mods = "CTRL|SHIFT", key = "V", action = act.PasteFrom("Clipboard") },
 			{
 				key = "k",
@@ -148,17 +146,15 @@ local keys = {
 				action = act.ShowDebugOverlay,
 			},
 			{
-				key = "Y",
+				key = "E",
 				mods = "LEADER|SHIFT",
-				action = wezterm.action_callback(function()
-					local _, first_pane, window = wezterm.mux.spawn_window({})
-					local _, second_pane, _ = window:spawn_tab({})
-					local _, third_pane, _ = window:spawn_tab({})
-
-					second_pane:send_text("<insert busybox command>\n")
-					third_pane:send_text("top\n")
-					third_pane:SendKey("Enter")
-					-- '\n' this will execute you shell command
+				action = act.InputSelector(projects.get_input_selector()),
+			},
+			{
+				key = "W",
+				mods = "LEADER|SHIFT",
+				action = wezterm.action_callback(function(win, _)
+					print(wezterm.mux.get_workspace_names())
 				end),
 			},
 		}
