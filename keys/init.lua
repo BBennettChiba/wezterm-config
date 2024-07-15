@@ -18,14 +18,17 @@ local direction_keys = {
 	l = "Right",
 }
 
-local choices = {}
-local workspaces = wezterm.mux.get_workspace_names()
-for i, workspace in ipairs(workspaces) do
-	print(workspace)
-	table.insert(choices, #choices + 1, {
-		label = workspace,
-		id = tostring(i),
-	})
+local function get_choices()
+	local choices = {}
+	local workspaces = wezterm.mux.get_workspace_names()
+	for i, workspace in ipairs(workspaces) do
+		table.insert(choices, #choices + 1, {
+			label = workspace,
+			id = tostring(i),
+		})
+	end
+
+	return choices
 end
 
 local smart_split = wezterm.action_callback(function(window, pane)
@@ -164,7 +167,7 @@ local keys = {
 					title = "Workspace selector",
 					action = wezterm.action_callback(function(_, _, _, label)
 						-- If the project workspace already exists, don't create it again. Just switch
-						for _, ws in pairs(workspaces) do
+						for _, ws in pairs(wezterm.mux.get_workspace_names()) do
 							if ws == label then
 								wezterm.mux.set_active_workspace(label)
 								return
@@ -172,7 +175,7 @@ local keys = {
 						end
 						print("something went wrong")
 					end),
-					choices = choices,
+					choices = get_choices(),
 				}),
 			},
 		}

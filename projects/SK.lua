@@ -25,20 +25,19 @@ function M.startup(wezterm, workspace_name)
 
 	wezterm.sleep_ms(700)
 	first_pane:send_text("lazydocker\r")
-	first_tab:set_title(wezterm.nerdfonts.linux_docker .. " lazydocker")
-
 	second_pane:send_text("nvim\r")
-	second_tab:set_title(wezterm.nerdfonts.dev_php .. " backend")
-
 	third_pane:send_text("nvim\r")
-	third_tab:set_title(wezterm.nerdfonts.md_nodejs .. " frontend-sk")
 	local node_pane = third_pane:split({ cwd = project_dir .. "frontend-SK" })
 	wezterm.sleep_ms(900)
 	node_pane:send_text("nvm use 16\n")
 	node_pane:send_text("npm start\n")
 	third_pane:activate()
-
 	fourth_pane:send_text("npx drizzle-kit studio\r")
+
+	wezterm.sleep_ms(400)
+	first_tab:set_title(wezterm.nerdfonts.linux_docker .. " lazydocker")
+	second_tab:set_title(wezterm.nerdfonts.md_language_php .. " backend")
+	third_tab:set_title(wezterm.nerdfonts.md_nodejs .. " frontend-sk")
 	fourth_tab:set_title(wezterm.nerdfonts.dev_mysql .. " drizzle")
 
 	first_pane:activate()

@@ -6,6 +6,23 @@ local cpu = require("cpu")
 local G = features.getLuaFromJSON()
 local scheme = wezterm.color.get_builtin_schemes()[G.colorscheme]
 
+local used_nerdfont_icons = {
+	wezterm.nerdfonts.linux_neovim,
+	wezterm.nerdfonts.linux_docker,
+	wezterm.nerdfonts.md_nodejs,
+	wezterm.nerdfonts.md_language_php,
+	wezterm.nerdfonts.dev_mysql,
+}
+
+local function icon_or_nothing(str)
+	for _, icon in ipairs(used_nerdfont_icons) do
+		if string.match(str, icon) then
+			return icon .. " "
+		end
+	end
+	return ""
+end
+
 local function hex2rgb(hex)
 	hex = hex:gsub("#", "")
 	return tonumber("0x" .. hex:sub(1, 2)), tonumber("0x" .. hex:sub(3, 4)), tonumber("0x" .. hex:sub(5, 6))
@@ -65,8 +82,8 @@ local ui = {
 			local title = tab.active_pane.title
 			if tab.tab_title and #tab.tab_title > 0 then
 				title = tab.tab_title
-				if string.find(title, "nvim") then
-					title = string.gsub(title, "nvim:", wezterm.nerdfonts.linux_neovim .. " ")
+				if string.match(title, "^nvim") then
+					title = string.gsub(title, "^nvim:", wezterm.nerdfonts.linux_neovim .. " ")
 				end
 			end
 
@@ -97,10 +114,11 @@ local ui = {
 			end
 			table.insert(tabTable, { Background = { Color = tab.is_active and active or inactive } })
 			table.insert(tabTable, { Foreground = { Color = "#FFFFFF" } })
-			table.insert(
-				tabTable,
-				{ Text = " " .. (tab.is_active and title .. " " or "") .. tostring((tab.tab_index + 1)) .. " " }
-			)
+			table.insert(tabTable, {
+				Text = " " .. (tab.is_active and title .. " " or icon_or_nothing(title)) .. tostring(
+					(tab.tab_index + 1)
+				) .. " ",
+			})
 			if is_last then
 				table.insert(tabTable, { Background = { Color = rgbPlusA } })
 				table.insert(tabTable, { Foreground = { Color = tab.is_active and active or inactive } })
