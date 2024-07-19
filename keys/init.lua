@@ -18,17 +18,16 @@ local direction_keys = {
 	l = "Right",
 }
 
-local function get_choices()
-	local choices = {}
+-- -- if I run this function the terminal doesn't launch in Ubuntu
+local function update_choices()
 	local workspaces = wezterm.mux.get_workspace_names()
+	local choices = {}
 	for i, workspace in ipairs(workspaces) do
 		table.insert(choices, #choices + 1, {
 			label = workspace,
 			id = tostring(i),
 		})
 	end
-
-	return choices
 end
 
 local smart_split = wezterm.action_callback(function(window, pane)
@@ -160,24 +159,27 @@ local keys = {
 				mods = "LEADER|SHIFT",
 				action = act.InputSelector(projects.get_input_selector()),
 			},
-			{
-				key = "W",
-				mods = "LEADER|SHIFT",
-				action = act.InputSelector({
-					title = "Workspace selector",
-					action = wezterm.action_callback(function(_, _, _, label)
-						-- If the project workspace already exists, don't create it again. Just switch
-						for _, ws in pairs(wezterm.mux.get_workspace_names()) do
-							if ws == label then
-								wezterm.mux.set_active_workspace(label)
-								return
-							end
-						end
-						print("something went wrong")
-					end),
-					choices = get_choices(),
-				}),
-			},
+			-- {
+			-- 	key = "W",
+			-- 	mods = "LEADER|SHIFT",
+			-- 	action = act.InputSelector({
+			-- 		title = "Workspace selector",
+			-- 		action = wezterm.action_callback(function(_, _, _, label)
+			-- 			-- If the project workspace already exists, don't create it again. Just switch
+			-- 			for _, ws in pairs(wezterm.mux.get_workspace_names()) do
+			-- 				if ws == label then
+			-- 					wezterm.mux.set_active_workspace(label)
+			-- 					return
+			-- 				end
+			-- 			end
+			-- 			print("something went wrong")
+			-- 		end),
+			-- 		choices = (function()
+			-- 			update_choices()
+			-- 			return choices
+			-- 		end)(),
+			-- 	}),
+			-- },
 		}
 
 		for i = 1, 9 do
