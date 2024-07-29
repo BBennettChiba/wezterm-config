@@ -63,7 +63,7 @@ end
 local keys = {
 	apply_to_config = function(config)
 		-- config.disable_default_key_bindings = true
-		config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
+		config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 2000 }
 		config.keys = {
 			{ mods = mod, key = "Enter", action = smart_split },
 			{ mods = "LEADER|SHIFT", key = "%", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
